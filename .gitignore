@@ -1,0 +1,15 @@
+pom.xml
+*jar
+/lib/
+/classes/
+/out/
+/target/
+/dist/
+.lein-deps-sum
+.lein-repl-history
+.lein-plugins/
+.repl
+.nrepl-port
+.cpcache/
+.rebel_readline_history
+/*.iml

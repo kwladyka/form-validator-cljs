@@ -1,0 +1,47 @@
+.page a, .page a:visited {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+code:not(.hljs) {
+    white-space: nowrap;
+    background-color: rgba(27,31,35,0.05);
+}
+
+
+.page {
+    margin: 0px 20px;
+}
+
+.library-description {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.example {
+    margin-top: 50px;
+    margin-bottom: 100px;
+    font-size: 18px;
+}
+
+.example h5 {
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid lightgrey;
+}
+
+.example .example-form {
+    padding: 40px;
+}
+
+.example .example-data {
+    padding: 20px;
+}
+
+ul li {
+    margin-bottom: 10px;
+    line-height: 20px;
+}

@@ -1,0 +1,1 @@
+{:npm {:bundles {"dist/index_bundle.js" "src/js/index.js"}}}

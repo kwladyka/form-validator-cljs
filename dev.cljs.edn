@@ -1,0 +1,4 @@
+^{:watch-dirs ["src"]
+  ;:watch-dirs ["src" "../master/src"]
+  :css-dirs ["resources/public/css"]}
+{:main form-validator-doc.core}
