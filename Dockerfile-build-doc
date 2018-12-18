@@ -1,0 +1,33 @@
+FROM clojure:tools-deps-alpine as build-env
+RUN apk add --no-cache nodejs nodejs-npm
+RUN apk add --no-cache git
+RUN apk add --no-cache openssh-client
+RUN git config --global user.email "krzysztof@wladyka.eu"
+RUN git config --global user.name "Krzysztof Władyka"
+
+# test module
+
+FROM build-env as test-app
+WORKDIR /app/master
+RUN git clone -b master https://github.com/kwladyka/form-validator-cljs.git /app/master
+RUN clojure -A:test:test-once
+
+# build doc
+
+WORKDIR /app/doc
+RUN git clone -b doc https://github.com/kwladyka/form-validator-cljs.git /app/doc
+RUN npm i
+RUN npx webpack --mode=production
+RUN clojure -A:fig:min
+# deploy doc
+
+RUN git clone -b gh-pages https://github.com/kwladyka/form-validator-cljs.git /app/gh-pages
+WORKDIR /app/artifacts
+RUN cp -r /app/gh-pages/.git ./
+RUN git remote set-url origin git@github.com:kwladyka/form-validator-cljs.git
+RUN cp -r /app/doc/resources/public/. ./
+RUN cp -r /app/doc/target/public/. ./
+RUN rm test.html
+RUN if [ `git symbolic-ref --short -q HEAD` != "gh-pages" ]; then exit; fi
+RUN git add .
+RUN git commit --amend --no-edit

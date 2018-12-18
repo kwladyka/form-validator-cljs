@@ -1,0 +1,154 @@
+# deprecated !!!
+
+resources:
+  - name: docker-environment
+    type: docker-image
+    source:
+      repository: kwladyka/form-validator-cljs
+      username: ((dockerhub-user))
+      password: ((dockerhub-password))
+
+  - name: git-master-deps.edn
+    type: git
+    source:
+      uri: https://github.com/kwladyka/form-validator-cljs.git
+      branch: master
+      paths: [deps.edn]
+  - name: git-doc-deps.edn
+    type: git
+    source:
+      uri: https://github.com/kwladyka/form-validator-cljs.git
+      branch: doc
+      paths: [deps.edn]
+
+  - name: git-cicd
+    type: git
+    source:
+      uri: https://github.com/kwladyka/form-validator-cljs.git
+      branch: cicd
+  - name: git-master
+    type: git
+    source:
+      uri: https://github.com/kwladyka/form-validator-cljs.git
+      branch: master
+  - name: git-doc
+    type: git
+    source:
+      uri: https://github.com/kwladyka/form-validator-cljs.git
+      branch: doc
+
+# - name: form-validator-release
+  # type: github-release
+  # source:
+    # owner: kwladyka
+    # repository: form-validator-cljs
+    # access_token: {{github-token}}}
+
+# - name: form-validator-doc
+#   type: git
+#   source:
+#     uri: git@github.com:kwladyka/form-validator-cljs.git
+#     branch: doc
+#     username: kwladyka
+#     password: hash
+#     private_key: |
+#       -----BEGIN RSA PRIVATE KEY-----
+#       MIIEowIBAAKCAQEAtCS10/f7W7lkQaSgD/mVeaSOvSF9ql4hf/zfMwfVGgHWjj+W
+#       <Lots more text>
+#       DWiJL+OFeg9kawcUL6hQ8JeXPhlImG6RTUffma9+iGQyyBMCGd1l
+#       -----END RSA PRIVATE KEY-----
+
+jobs:
+  - name: build-environment
+    serial: true
+    plan:
+      - aggregate:
+        - get: git-master-deps.edn
+          trigger: true
+        - get: git-doc-deps.edn
+          trigger: true
+        - get: git-cicd
+          trigger: true
+        - get: git-master
+        - get: git-doc
+      - task: prepare-files
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: alpine
+          inputs:
+          - name: git-master
+          - name: git-doc
+          outputs:
+          - name: workspace-deps
+          run:
+            path: sh
+            args:
+            - -exc
+            - |
+              cp --parents git-master/deps.edn workspace-deps/
+              cp --parents git-doc/deps.edn workspace-deps/
+      - put: docker-environment
+        params: {build: workspace-deps, dockerfile: git-cicd/Dockerfile-deps}
+
+  - name: tests-master
+    plan:
+      - get: docker-environment
+        trigger: true
+        passed: [build-environment]
+      - get: git-master
+        trigger: true
+      - task: tests
+        image: docker-environment
+        config:
+          platform: linux
+          inputs:
+          - name: git-master
+          run:
+            dir: git-master
+            path: clojure
+            args: ['-A:test:test-once']
+
+
+  - name: deploy-doc
+    serial: true
+    plan:
+      - get: docker-environment
+        trigger: true
+        passed: [tests-master]
+      - get: git-master
+        trigger: true
+        passed: [tests-master]
+      - get: git-doc
+        trigger: true
+      - task: build
+        image: docker-environment
+        config:
+          platform: linux
+          inputs:
+          - name: git-doc
+          outputs:
+          - name: artifacts
+          run:
+            path: sh
+            args:
+            - -exc
+            - |
+              cd git-doc && clojure -A:fig:min && cd ..
+              cp -r git-doc/resources/public/. artifacts/
+              cp -r git-doc/target/public/. artifacts/
+      - task: deploy
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: alpine
+          inputs:
+          - name: artifacts
+          run:
+            dir: artifacts
+            path: ls
+            args: ['./']
