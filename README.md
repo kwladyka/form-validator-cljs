@@ -17,7 +17,7 @@ Why? I need it myself. Everybody needs it. But I didn't find any library which s
 ### deps.edn
 
 ```clojure
-{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha ""}}}
+{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "5917f9c4fc3c0ea0f22d71bc6a9f1c1257a72319"}}}
 ```
 
 ### Lein
