@@ -19,7 +19,7 @@ Why? I need it myself. But I didn't find any library which satisfy me, so I wrot
 ### deps.edn
 
 ```clojure
-{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "5917f9c4fc3c0ea0f22d71bc6a9f1c1257a72319"}}}
+{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "f8708868a98d004f75d8fdd92ee59c42c821e35e"}}}
 ```
 
 ### Lein
