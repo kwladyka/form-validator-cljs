@@ -6,11 +6,13 @@ ClojureScript library to validate forms.
 
 - Move repeatable code for form validation from app to library.
 - Validate with `fn` and `spec`.
-- Customizable messages with customizable structure. Could be `"foo"`, `{:level :warn :msg "foo"}` or whatever.
-- Customizable workflow. Let you choose when to show messages: `on-blur` / `on-change` / immediately after load page / ...
+- Custom messages. Could be `"foo"`, `{:level :warn :msg "foo"}` or whatever.
+- Custom workflow. Let you choose when to show messages: `on-blur` / `on-change` / immediately after load page / ...
 - Easy and simple independent small solution. Compatible with `re-frame`, `fulcro` or whatever.
+- Work with different types of inputs, also custom ones line in material UI.
+- Base logic to make custom UI, but no UI included. No limitations.
 
-Why? I need it myself. Everybody needs it. But I didn't find any library which satisfy me, so I wrote my own.
+Why? I need it myself. But I didn't find any library which satisfy me, so I wrote my own.
 
 ## Add dependency
 
@@ -52,7 +54,7 @@ Init form
 ```clojure
 (-> {:names->value {:email ""
                     :password ""}
-     :form-spec ::form
+     :form-spec ::spec/form
     (form-validator/init-form))
 ```
 
@@ -72,7 +74,6 @@ Then you can use functions from ns `form-validator.core`:
 - `event->show-message` - With `on-blur` / `on-change` input event to trigger when show messages in UI.
 - `?show-message` - Get message to show in UI for input. Also to know if mark input as not valid in UI.
 - `form-valid?` - true / false
-- `validate-form` - Validate all inputs. Usually you don't need use this function.
 - `validate-form-and-show` - Call `validate-form` and show all messages. Use with submit button.
 
 ## Tutorial with live examples
@@ -83,7 +84,7 @@ The best to do after this readme. But if you are inpecient take a look and back 
 
 ## Specification
 
-### Input
+### Init form
 
 ```clojure
 
@@ -111,7 +112,7 @@ The best to do after this readme. But if you are inpecient take a look and back 
 - `:names->value` - Form inputs with values to initialize.  
 Use cases: Empty values for new data form / filled values with already existed data (update form) / if input is not required by spec `:opt-un` it can be ommited.
 - `:names->validators` - Vector of spec keywords and fn. Order matter.  
-Use cases: When don't have `spec` for form / `fn` to compare password-repeat if you can't have it in `spec` / check if user already exist by API during registration.
+Use cases: When don't have `spec` for form / if checkbox "accept terms" is checked / `fn` to compare password-repeat / check if user already exist by API during registration.
 - `:form-spec` - Spec to validate whole form.  
 *Should use always, unless you don't have specs.
 - `:show-all?` - If show messages immediately after init form.  
@@ -121,9 +122,9 @@ Use cases: When don't have `spec` for form / `fn` to compare password-repeat if 
 
 \* You can use `:form-spec` and `:names->validators` together. `:form-spec` is checked first.
 
-### Output
+### Interact with form
 
-Return `atom`:
+`(init-form ...)` return `atom`:
 
 ```clojure
 {:form-spec :app.spec/form
@@ -158,17 +159,17 @@ If reason of fail is not a vector, then it is returning as it is. For example `"
 
 ## Tips & Tricks & FAQ
 
-- Architecture of library let you make customizable things on it. You can modify `atom` returned by `form-init`, `add-watch` on `atom`, add functions on top of core functions, use your own functions instead of core ones. It is designed to let you make customizable things. In most of cases you really don't need to do it. It could be usefull if you like to make your module based on this one.
+- Architecture of library let you make custom UI and validation on it. You can modify `atom` returned by `form-init`, `add-watch` on `atom`, add functions on top of core functions, use your own functions instead of core ones. It is designed to let you make customizable things. In most of cases you really don't need to do it. It could be useful if you like to make your module based on this one.
 - To not prevent send form with warning (not error) messages like "Password is weak. We recommend to use better password." you have to use your own `form-valid?` function or make two `form-init` (first for errors and second for warnings). I decided to not make it part of this library, because it is individual thing for project.
 - Probably you want to write your own functions to generate UI HTML form and inputs based on this library. UI is individual thing for project, so I decided it wouldn't be part of this library. Instead this library give solid basement, which let you to build visualisation on it.
 
 ---
 
-Everythin below this line is mainly for myself as a maintainter of this library.
+Everything below this line is mainly for myself as a maintainer of this library.
 
 ## Developing
 
-Library has to be always check with web browsers mamually! Not only automated tests. The reasons are differences between web browsers and practical aspects of usability vs imagination :)
+Library has to be always check with web browsers manually! Not only automated tests. The reasons are differences between web browsers and practical aspects of usability vs imagination :)
 
 To do it use `doc` branch from this repository.
 
