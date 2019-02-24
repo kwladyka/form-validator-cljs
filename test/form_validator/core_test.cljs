@@ -12,6 +12,10 @@
 (s/def ::password (s/and string? ::password-not-empty ::password-length))
 (s/def ::form-map (s/keys :req-un [::email ::password]
                           :opt-un [::password-repeat]))
+
+(s/def ::checked some?)
+(s/def ::foo #(= "foo" %))
+
 (s/def ::form (s/and ::form-map
                      ::spec-password-repeat))
 
@@ -188,3 +192,46 @@
       (is (= "custom message"
              (form-validator/?show-message form :password {}))
           "When invalid reason in not a vector, return it. It can be also for example map."))))
+
+(deftest input-types-test
+  (let [form (-> {:names->value {}
+                  :names->validators {:email [::email]
+                                      :password [::password]
+                                      :checkbox-without-value [::checked]
+                                      :checkbox-with-value [::foo]}}
+                 (form-validator/init-form))
+        get-form #(get-in @form [:names->invalid %])
+        on-change (event-simulation (partial form-validator/event->names->value! form))]
+    (testing "text"
+      (on-change {:type "text" :name "email" :value "foo@example.com"})
+      (is (nil? (get-form :email))
+          "input pass")
+      (on-change {:type "text" :name "email" :value "foo@example"})
+      (is (= (get-form :email)
+             [::email])
+          "input fail"))
+
+    (testing "password"
+      (on-change {:type "password" :name "password" :value "12345678"})
+      (is (nil? (get-form :password))
+          "password pass")
+      (on-change {:type "password" :name "password" :value ""})
+      (is (= (get-form :password)
+             [::password ::password-not-empty])
+          "password fail"))
+
+    (testing "checkbox"
+      (on-change {:type "checkbox" :checked true :name "checkbox-without-value"})
+      (is (nil? (get-form :checkbox-without-value))
+          "checkbox-without-value pass")
+      (on-change {:type "checkbox" :checked false :name "checkbox-without-value"})
+      (is (= (get-form :checkbox-without-value)
+             [::checked])
+          "checkbox-without-value fail")
+      (on-change {:type "checkbox" :checked true :name "checkbox-with-value" :value "foo"})
+      (is (nil? (get-form :checkbox-with-value))
+          "checkbox-with-value pass")
+      (on-change {:type "checkbox" :checked false :name "checkbox-with-value" :value "foo"})
+      (is (= (get-form :checkbox-with-value)
+             [::foo])
+          "checkbox-with-value fail"))))

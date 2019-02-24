@@ -60,7 +60,11 @@
   "Update input value to names->value and validate.
   The best with :on-change event."
   (let [name (keyword event.target.name)
-        value event.target.value]
+        type event.target.type
+        value (case type
+                "checkbox" (when event.target.checked
+                             (or (not-empty event.target.value) true))
+                event.target.value)]
     (swap! form #(assoc-in % [:names->value name] value))
     (validate-form form)))
 
