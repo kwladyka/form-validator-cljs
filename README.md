@@ -5,7 +5,7 @@ ClojureScript library to validate forms.
 ## Rationale
 
 - Move repeatable code for form validation from app to library.
-- Validate with `fn` and `spec`.
+- Validate by `spec` and `fn`.
 - Custom messages. Could be `"foo"`, `{:level :warn :msg "foo"}` or whatever.
 - Custom workflow. Let you choose when to show messages: `on-blur` / `on-change` / immediately after load page / ...
 - Easy and simple independent small solution. Compatible with `re-frame`, `fulcro` or whatever.
@@ -135,9 +135,9 @@ Use cases: When don't have `spec` for form / if checkbox "accept terms" is check
  :names->validators {:email #object[cljs$core$sp1], :password-repeat #object[cljs$core$sp1]}}
  ```
 
-- `:form-spec` - Input without any change.
+- `:form-spec` - Init form value without any change.
 - `:names->value` - Values of the form.
-- `:names->invalid` - Iinvalid inputs with reasons of validation fail.
+- `:names->invalid` - Invalid inputs with reasons of validation fail.
 - `:names->show` - Add name of the input here, when you want to show message in UI.
 - `:names->validators` - All validators converted to one fn which works similar to `some`. Check all validators for specific input one by one, unless fail or return `nil`.
 
@@ -153,15 +153,15 @@ Use cases: When don't have `spec` for form / if checkbox "accept terms" is check
       :password-not-equal "Repeat password has to be the same."}
      (form-validator/?show-message form :password))
 ```
-Based on `[::form ::form-map ::password ::password-not-empty]` it is trying to find `::password-not-empty` message. Map not contain message for this spec. Then try to find `::password` and return message. If not find going deeper. If not find any, return `true`.
+Based on `[::form ::form-map ::password ::password-not-empty]` it is trying to find `::password-not-empty` message. Map not contain message for this spec. Then try to find `::password` and return message. If not find, going deeper. If not find any, return `true`.
 
 If reason of fail is not a vector, then it is returning as it is. For example `"cutom message"` or `{:level :warn :msg "This is only warning."}`. This is dedicated for `fn` validators.
 
 ## Tips & Tricks & FAQ
 
-- Architecture of library let you make custom UI and validation on it. You can modify `atom` returned by `form-init`, `add-watch` on `atom`, add functions on top of core functions, use your own functions instead of core ones. It is designed to let you make customizable things. In most of cases you really don't need to do it. It could be useful if you like to make your module based on this one.
-- To not prevent send form with warning (not error) messages like "Password is weak. We recommend to use better password." you have to use your own `form-valid?` function or make two `form-init` (first for errors and second for warnings). I decided to not make it part of this library, because it is individual thing for project.
-- Probably you want to write your own functions to generate UI HTML form and inputs based on this library. UI is individual thing for project, so I decided it wouldn't be part of this library. Instead this library give solid basement, which let you to build visualisation on it.
+- Architecture of library let you make custom UI and validation on it. You can modify `atom` returned by `form-init`, `add-watch` on `atom`, add functions on top of core functions, use your own functions instead of core ones. It is designed to let you make custom things. In most of cases you really don't need to do it. It could be useful if you want to make your module based on this one.
+- To not prevent send form with warning (not error) messages like "Password is weak. We recommend to use better password" you have to use your own `form-valid?` function or make two `form-init` (first for errors and second for warnings). I decided to not make it as part of this library, because it is individual thing for project.
+- You want to write your own functions to generate UI HTML form and inputs based on this library. UI is individual thing for project, so I decided it wouldn't be part of this library. Instead this library give solid basement, which let you to build visualisation on it.
 
 ---
 
