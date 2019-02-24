@@ -9,7 +9,7 @@ ClojureScript library to validate forms.
 - Custom messages. Could be `"foo"`, `{:level :warn :msg "foo"}` or whatever.
 - Custom workflow. Let you choose when to show messages: `on-blur` / `on-change` / immediately after load page / ...
 - Easy and simple independent small solution. Compatible with `re-frame`, `fulcro` or whatever.
-- Work with different types of inputs, also custom ones line in material UI.
+- Work with different types of inputs, also custom ones like in material UI.
 - Base logic to make custom UI, but no UI included. No limitations.
 
 Why? I need it myself. But I didn't find any library which satisfy me, so I wrote my own.
