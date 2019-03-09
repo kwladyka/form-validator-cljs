@@ -13,7 +13,6 @@
 (s/def ::form-map (s/keys :req-un [::email ::password]
                           :opt-un [::password-repeat]))
 
-(s/def ::checked some?)
 (s/def ::foo #(= "foo" %))
 
 (s/def ::form (s/and ::form-map
@@ -68,7 +67,7 @@
                  (names->invalid))
              {:email [:email :email-exist]
               :password-repeat [:password-repeat :password-not-equal]})
-          "additional validations after ::form-map by functions assigned to inputs name")
+          "additional validations by :names->validators")
       (is (= (-> {:names->value {:email "foo@example.com"
                                  :password "12345678"
                                  :password-repeat "12345678"}
@@ -101,25 +100,6 @@
           "Add new values"))))
 
 (deftest show-messages-test
-  (testing "Show not empty inputs on init"
-    (let [names->show (fn [form-conf]
-                        (-> @(form-validator/init-form form-conf)
-                            :names->show))]
-      (is (= (-> {:names->value {:email ""
-                                 :password ""}
-                  :form-spec ::form}
-                 (names->show))
-             #{}))
-      (is (= (-> {:names->value {:email "foo@example.com"
-                                 :password ""}
-                  :form-spec ::form}
-                 (names->show))
-             #{:email}))
-      (is (= (-> {:names->value {:email "foo"
-                                 :password ""}
-                  :form-spec ::form}
-                 (names->show))
-             #{:email}))))
   (testing "Show inputs messages"
     (let [form (-> {:names->value {:email ""
                                    :password ""}
@@ -173,7 +153,7 @@
   (testing "Show right message with spec contained deeper spec"
     (let [form (->> {:names->value {:password "qwaszx"}
                      :names->validators {:password [::password]}
-                     :show-all? true}
+                     :names->show #{:password}}
                     (form-validator/init-form))]
       (is (= "Password too short"
              (->> {::password "Password has to have more than 8 characters"
@@ -187,7 +167,7 @@
 
     (let [form (->> {:names->value {:password "qwaszx"}
                      :names->validators {:password [(constantly "custom message")]}
-                     :show-all? true}
+                     :names->show #{:password}}
                     (form-validator/init-form))]
       (is (= "custom message"
              (form-validator/?show-message form :password {}))
@@ -197,41 +177,41 @@
   (let [form (-> {:names->value {}
                   :names->validators {:email [::email]
                                       :password [::password]
-                                      :checkbox-without-value [::checked]
+                                      :checkbox-without-value [::form-validator/checked]
                                       :checkbox-with-value [::foo]}}
                  (form-validator/init-form))
-        get-form #(get-in @form [:names->invalid %])
+        get-invalid #(get-in @form [:names->invalid %])
         on-change (event-simulation (partial form-validator/event->names->value! form))]
     (testing "text"
       (on-change {:type "text" :name "email" :value "foo@example.com"})
-      (is (nil? (get-form :email))
+      (is (nil? (get-invalid :email))
           "input pass")
       (on-change {:type "text" :name "email" :value "foo@example"})
-      (is (= (get-form :email)
+      (is (= (get-invalid :email)
              [::email])
           "input fail"))
 
     (testing "password"
       (on-change {:type "password" :name "password" :value "12345678"})
-      (is (nil? (get-form :password))
+      (is (nil? (get-invalid :password))
           "password pass")
       (on-change {:type "password" :name "password" :value ""})
-      (is (= (get-form :password)
+      (is (= (get-invalid :password)
              [::password ::password-not-empty])
           "password fail"))
 
     (testing "checkbox"
       (on-change {:type "checkbox" :checked true :name "checkbox-without-value"})
-      (is (nil? (get-form :checkbox-without-value))
+      (is (nil? (get-invalid :checkbox-without-value))
           "checkbox-without-value pass")
       (on-change {:type "checkbox" :checked false :name "checkbox-without-value"})
-      (is (= (get-form :checkbox-without-value)
-             [::checked])
+      (is (= (get-invalid :checkbox-without-value)
+             [::form-validator/checked])
           "checkbox-without-value fail")
       (on-change {:type "checkbox" :checked true :name "checkbox-with-value" :value "foo"})
-      (is (nil? (get-form :checkbox-with-value))
+      (is (nil? (get-invalid :checkbox-with-value))
           "checkbox-with-value pass")
       (on-change {:type "checkbox" :checked false :name "checkbox-with-value" :value "foo"})
-      (is (= (get-form :checkbox-with-value)
+      (is (= (get-invalid :checkbox-with-value)
              [::foo])
           "checkbox-with-value fail"))))

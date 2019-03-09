@@ -3,6 +3,10 @@
 
 (def conf (atom {:atom atom}))
 
+;;; helpers
+;; checkbox
+(s/def ::checked (complement (some-fn nil? false?)))
+
 (defn ?spec-problems [spec value]
   "Return nil if pass."
   (-> (s/explain-data spec value)
