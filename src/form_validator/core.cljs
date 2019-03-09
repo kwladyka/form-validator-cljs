@@ -66,7 +66,9 @@
     (validate-form form)))
 
 (defn show-if-not-empty [form name]
-  "Add name (input) to :names->show if value is not empty."
+  "Add name (input) to :names->show if value is not empty.
+  hint: Add to :names->show has to be done once and it stay forever.
+  Prevent to show errors when user jump between inputs by tab."
   (let [value (get-in @form [:names->value name])]
     (when-not (or (nil? value)
                   (= "" value))
@@ -84,7 +86,7 @@
 
 (defn get-message [form name messages]
   "1. If invalid is a vector find the deepest message.
-  2. If invalid is not a vector return it as it is."
+  2. If invalid is not a vector return as it is."
   (when-let [invalid-reasons (get-in @form [:names->invalid name])]
     (if (vector? invalid-reasons)
       (->> (reverse invalid-reasons)
@@ -106,7 +108,7 @@
 (defn form-valid? [form]
   (empty? (:names->invalid @form)))
 
-(defn validate-form-and-show [form]
+(defn validate-form-and-show? [form]
   (validate-form form)
   (show-all form)
   (form-valid? form))
@@ -117,11 +119,7 @@
     (reset! form {:form-spec (:form-spec form-conf)
                   :names->value (:names->value form-conf)
                   :names->invalid {}
-                  :names->show #{}
+                  :names->show (or (:names->show form-conf) #{})
                   :names->validators (validators->some-validators form (:names->validators form-conf))})
     (validate-form form)
-    (case (:show-all? form-conf)
-      true (show-all form)
-      nil (doseq [name (keys (:names->value @form))]
-            (show-if-not-empty form name)))
     form))

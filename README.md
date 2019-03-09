@@ -74,7 +74,7 @@ Then you can use functions from ns `form-validator.core`:
 - `event->show-message` - With `on-blur` / `on-change` input event to trigger when show messages in UI.
 - `?show-message` - Get message to show in UI for input. Also to know if mark input as not valid in UI.
 - `form-valid?` - true / false
-- `validate-form-and-show` - Call `validate-form` and show all messages. Use with submit button.
+- `validate-form-and-show?` - Call `validate-form` and show all messages. Use with submit button.
 
 ## Tutorial with live examples
 
@@ -111,16 +111,14 @@ The best to do after this readme. But if you are inpecient take a look and back 
 
 - `:names->value` - Form inputs with values to initialize.  
 Use cases: Empty values for new data form / filled values with already existed data (update form) / if input is not required by spec `:opt-un` it can be ommited.
+- `:form-spec` - Spec to validate whole form.  
+Should use always, unless you don't have specs.
 - `:names->validators` - Vector of spec keywords and fn. Order matter.  
 Use cases: When don't have `spec` for form / if checkbox "accept terms" is checked / `fn` to compare password-repeat / check if user already exist by API during registration.
-- `:form-spec` - Spec to validate whole form.  
-*Should use always, unless you don't have specs.
-- `:show-all?` - If show messages immediately after init form.  
-`nil` - show for not empty values (default)  
-`true` - show all  
-`false` - do not showy any
+- `:names->show` - `#{}` with names of inputs to show error messages on start.
+Use cases: Form with already filled values. 
 
-\* You can use `:form-spec` and `:names->validators` together. `:form-spec` is checked first.
+You can use `:form-spec` and `:names->validators` together. `:form-spec` is checked first.
 
 ### Interact with form
 
