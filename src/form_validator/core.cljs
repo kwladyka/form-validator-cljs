@@ -3,10 +3,6 @@
 
 (def conf (atom {:atom atom}))
 
-(defn set-conf! [settings]
-  ":atom - fn to make atom. For example atom or reagent.core/atom"
-  (reset! conf settings))
-
 (defn ?spec-problems [spec value]
   "Return nil if pass."
   (-> (s/explain-data spec value)

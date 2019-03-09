@@ -44,7 +44,7 @@ To be compatible with reagent library, needs to use `reagent.core/atom` instead 
             [form-validator.core :as form-validator]))
 
 ;; First line in core ns or dedicated init fn is a right place
-(form-validator/set-conf! {:atom r/atom})
+(swap! form-validator/conf #(merge % {:atom r/atom}))
 ```
 
 ## TL;DR
