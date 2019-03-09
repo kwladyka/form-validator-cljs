@@ -58,8 +58,9 @@
   (let [name (keyword event.target.name)
         type event.target.type
         value (case type
-                "checkbox" (when event.target.checked
-                             (or (not-empty event.target.value) true))
+                "checkbox" (if event.target.checked
+                             (or (not-empty event.target.value) true)
+                             false)
                 event.target.value)]
     (swap! form #(assoc-in % [:names->value name] value))
     (validate-form form)))
