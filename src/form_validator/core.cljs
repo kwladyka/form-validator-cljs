@@ -67,7 +67,8 @@
 (defn show-if-not-empty [form name]
   "Add name (input) to :names->show if value is not empty."
   (let [value (get-in @form [:names->value name])]
-    (when-not (empty? value)
+    (when-not (or (nil? value)
+                  (= "" value))
       (swap! form #(update % :names->show (fn [names->show]
                                             (conj names->show name)))))))
 
