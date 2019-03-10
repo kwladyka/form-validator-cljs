@@ -19,7 +19,7 @@ Why? I need it myself. But I didn't find any library which satisfy me, so I wrot
 ### deps.edn
 
 ```clojure
-{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "f8708868a98d004f75d8fdd92ee59c42c821e35e"}}}
+{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "af088fd5709d4a48feea249285a315dd3c91a145"}}}
 ```
 
 ### Lein
@@ -81,6 +81,8 @@ Then you can use functions from ns `form-validator.core`:
 Discover it naturally in 10 minutes: https://kwladyka.github.io/form-validator-cljs/
 
 The best to do after this readme. But if you are inpecient take a look and back here.
+
+Disclaimer: Tutorial is not up to date. If you like this library and want to see updated and better tutorial write to me on Clojurians Slack @kwladyka to give me motivation.
 
 ## Specification
 
