@@ -5,49 +5,55 @@
 
 ;;; helpers
 ;; checkbox
-(s/def ::checked (complement (some-fn nil? false?)))
+(s/def ::checked boolean)
 
-(defn ?spec-problems [spec value]
+(defn ?spec-problems
   "Return nil if pass."
+  [spec value]
   (-> (s/explain-data spec value)
       :cljs.spec.alpha/problems))
 
-(defn spec-validate [form spec name]
+(defn spec-validate
   "Check value with spec.
   If fail return reason: vector of spec keywords."
+  [form spec name]
   (->> (get-in @form [:names->value name])
        (?spec-problems spec)
        (first)
        :via))
 
-(defn validator->fn [form validator]
+(defn validator->fn
   "If spec, transform to fn.
   Make consistent fn to check values:
   (fn [name] ...) return reason of fail or nil"
+  [form validator]
   (if (fn? validator)
     (partial validator form)
     (partial spec-validate form validator)))
 
-(defn validators->some-validators [form names->validators]
+(defn validators->some-validators
   "convert validators {:name [::spec f ...]} into {:name some-validator} which check all validators unless one of them fail."
+  [form names->validators]
   (reduce-kv (fn [m name validators]
                (assoc m name (->> (map (partial validator->fn form) validators)
                                   (apply some-fn))))
              {} names->validators))
 
-(defn validate-name [form name]
+(defn validate-name
   "Validate name (input) in names->value.
   Update names->invalid."
+  [form name]
   (when-let [some-validators (get-in @form [:names->validators name])]
     (if-let [?invalid (some-validators name)]
       (swap! form #(assoc-in % [:names->invalid name] ?invalid))
       (swap! form #(update % :names->invalid (fn [names->invalid]
                                                (dissoc names->invalid name)))))))
 
-(defn validate-form [form]
+(defn validate-form
   "1. Validate names->value with :spec-form.
   2. Next validate names->value with names->validators.
   Do not overwrite errors from 1. by 2."
+  [form]
   (swap! form #(assoc % :names->invalid {}))
   (doseq [{:keys [in via]} (?spec-problems (:form-spec @form) (:names->value @form))]
     (let [name (first in)]
@@ -56,9 +62,10 @@
     (when-not (get-in @form [:names->invalid name])
       (validate-name form name))))
 
-(defn event->names->value! [form event]
+(defn event->names->value!
   "Update input value to names->value and validate.
   The best with :on-change event."
+  [form event]
   (let [name (keyword event.target.name)
         type event.target.type
         value (case type
@@ -69,10 +76,11 @@
     (swap! form #(assoc-in % [:names->value name] value))
     (validate-form form)))
 
-(defn show-if-not-empty [form name]
+(defn show-if-not-empty
   "Add name (input) to :names->show if value is not empty.
   hint: Add to :names->show has to be done once and it stay forever.
   Prevent to show errors when user jump between inputs by tab."
+  [form name]
   (let [value (get-in @form [:names->value name])]
     (when-not (or (nil? value)
                   (= "" value))
@@ -83,14 +91,16 @@
   (->> (keyword event.target.name)
        (show-if-not-empty form)))
 
-(defn show-all [form]
+(defn show-all
   "Add all names (inputs) to :names->show"
+  [form]
   (swap! form #(assoc % :names->show (-> (concat (keys (:names->value @form)) (keys (:names->invalid @form)))
                                          (set)))))
 
-(defn get-message [form name messages]
+(defn get-message
   "1. If invalid is a vector find the deepest message.
   2. If invalid is not a vector return as it is."
+  [form name messages]
   (when-let [invalid-reasons (get-in @form [:names->invalid name])]
     (if (vector? invalid-reasons)
       (->> (reverse invalid-reasons)
