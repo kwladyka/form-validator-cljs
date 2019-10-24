@@ -25,7 +25,7 @@ The best to do after this readme. But if you are inpatient take a look and back 
 ### deps.edn
 
 ```clojure
-{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "af088fd5709d4a48feea249285a315dd3c91a145"}}}
+{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "0fec75c9046bff3b5c5f37a0bd7f821c1e8edbe0"}}}
 ```
 
 ### Lein
