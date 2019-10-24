@@ -1,4 +1,5 @@
-^{:watch-dirs ["src"]
-  ;:watch-dirs ["src" "../master/src"]
+^{:ring-server-options {:port 9501}
+  :watch-dirs ["src"]
+  ; :watch-dirs ["src" "../master/src"]
   :css-dirs ["resources/public/css"]}
 {:main form-validator-doc.core}
