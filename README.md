@@ -4,15 +4,13 @@
 
 Tutorial with examples for branch `master`.
 
-## Examples
+## Output
 
 Output of this branch is saved to https://kwladyka.github.io/form-validator-cljs/
 
-Look into `src` of this branch to see real examples.
-
 ## Developing
 
-Be sure you have this directories, which are branches from repository.
+Be sure you have this directories, which are branches from this repository.
 
 ```bash
 mkdir form-validator-cljs
@@ -28,7 +26,7 @@ tree -L 1
 └── master
 ```
 
-### If you change library code
+### If you change `master` branch
 
 Change source of the module to local folder
 
@@ -53,7 +51,7 @@ Add source of library to watch-dir.
 ```bash
 npm i
 npx webpack --mode=development
-clojure -A:fig:build
+clj -A:fig:build
 ```
 
 ### Production
