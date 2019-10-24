@@ -2,4 +2,7 @@
   :watch-dirs ["src"]
   ; :watch-dirs ["src" "../master/src"]
   :css-dirs ["resources/public/css"]}
-{:main form-validator-doc.core}
+{:main form-validator-doc.core
+ ; Use when error with :advanced compilation to debug easier
+ ; :pseudo-names true
+ }
