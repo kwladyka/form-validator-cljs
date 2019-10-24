@@ -20,19 +20,14 @@
 
 (defn app-bar []
   [mui/app-bar
-   {:style {:box-shadow "none"
-            :color "#f5f5f5"
-            :background-color "#6a1b9a"
-            }
+   {:style {:color "#e3f2fd"}
     :position "static"}
    [mui/toolbar
     [:h2
-     "kwladyka/form-validator-cljs"]
+     [:a {:style {:color "inherit"
+                  :text-decoration "none"}
+          :href "https://github.com/kwladyka/form-validator-cljs"} "kwladyka/form-validator-cljs"]]
     [:div {:style {:flex 1}}]
-    [mui/button
-     {:color "inherit"
-      :href "https://github.com/kwladyka/form-validator-cljs"}
-     "github library"]
     [mui/button
      {:color "inherit"
       :href "https://github.com/kwladyka/form-validator-cljs/tree/doc"}
@@ -91,7 +86,7 @@
         {:keys [form input checkbox radio select]} (util/init form-conf spec->msg)]
     (fn []
       [mui/grid {:container true
-                 :spacing 32}
+                 :spacing 4}
        [mui/grid {:item true
                   :md 6}
         [mui/paper {:class "form"}
