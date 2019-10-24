@@ -68,7 +68,6 @@
   (let [spec->msg {::sc/email "Typo? It doesn't look valid."
                    ::sc/password-length "Password has to be minimum 6 characters."
                    ::sc/password-not-empty "Password can't be empty."
-                   ::sc/password-special-character "Need to have minimum one special character !@#$%^&*"
                    :password-not-equal "Password has to be the same."
                    ::sc/selected "You have to choose."
                    ::sc/select-one "Accept only green."
