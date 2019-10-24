@@ -1,13 +1,14 @@
-{:deps {org.clojure/clojure {:mvn/version "1.9.0"}
-        org.clojure/clojurescript {:mvn/version "1.10.439"}
-        reagent {:mvn/version "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom]}
-        ;form-validator {:local/root "../master"}
-        github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs.git" :sha "5917f9c4fc3c0ea0f22d71bc6a9f1c1257a72319"}
-        org.clojure/test.check {:mvn/version "0.9.0"}}
+{:deps {org.clojure/clojure {:mvn/version "1.10.1"}
+        org.clojure/clojurescript {:mvn/version "1.10.520"}
+        reagent {:mvn/version "0.9.0-rc1" :exclusions [cljsjs/react cljsjs/react-dom]}
+        re-frame {:mvn/version "0.11.0-rc1"}
+        ;github-kwladyka/form-validator {:local/root "../master"}
+        github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs.git" :sha "0fec75c9046bff3b5c5f37a0bd7f821c1e8edbe0"}
+        org.clojure/test.check {:mvn/version "0.10.0"}}
  :paths ["src" "resources"]
  :aliases {:fig {:extra-deps
                  {com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
-                  com.bhauman/figwheel-main {:mvn/version "0.1.9"}}
+                  com.bhauman/figwheel-main {:mvn/version "0.2.3"}}
                  :extra-paths ["target" "test"]}
            :build {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}
            :min {:main-opts ["-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]}}}
