@@ -5,6 +5,7 @@
 
 ;;; Validators
 
+(s/def ::checked boolean)
 (s/def ::email (s/and string? (partial re-matches #"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$")))
 (s/def ::password-not-empty not-empty)
 (s/def ::password-length #(<= 8 (count %)))
@@ -177,7 +178,7 @@
   (let [form (-> {:names->value {}
                   :names->validators {:email [::email]
                                       :password [::password]
-                                      :checkbox-without-value [::form-validator/checked]
+                                      :checkbox-without-value [::checked]
                                       :checkbox-with-value [::foo]}}
                  (form-validator/init-form))
         get-invalid #(get-in @form [:names->invalid %])
@@ -206,7 +207,7 @@
           "checkbox-without-value pass")
       (on-change {:type "checkbox" :checked false :name "checkbox-without-value"})
       (is (= (get-invalid :checkbox-without-value)
-             [::form-validator/checked])
+             [::checked])
           "checkbox-without-value fail")
       (on-change {:type "checkbox" :checked true :name "checkbox-with-value" :value "foo"})
       (is (nil? (get-invalid :checkbox-with-value))

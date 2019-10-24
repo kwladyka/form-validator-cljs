@@ -3,10 +3,6 @@
 
 (def conf (atom {:atom atom}))
 
-;;; helpers
-;; checkbox
-(s/def ::checked boolean)
-
 (defn ?spec-problems
   "Return nil if pass."
   [spec value]
@@ -78,7 +74,7 @@
 
 (defn show-if-not-empty
   "Add name (input) to :names->show if value is not empty.
-  hint: Add to :names->show has to be done once and it stay forever.
+  hint: Add to :names->show has to be done once and it stays forever.
   Prevent to show errors when user jump between inputs by tab."
   [form name]
   (let [value (get-in @form [:names->value name])]
