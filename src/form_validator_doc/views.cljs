@@ -3,319 +3,171 @@
             [form-validator-doc.spec :as sc]
             [form-validator.core :as fv]
             [material-ui.core :as mui]
+            [form-validator-doc.form :as util]
             [cljs.pprint :refer [pprint]]
             [highlight :as highlight]))
 
 (def highlight-clojure (r/adapt-react-class highlight))
-(def link-view [:a {:href "https://github.com/kwladyka/form-validator-cljs/blob/doc/src/form_validator_doc/views.cljs"} "view.cljs"])
-(def link-spec [:a {:href "https://github.com/kwladyka/form-validator-cljs/blob/doc/src/form_validator_doc/spec.cljs"} "spec.cljs"])
-
-(defn app-bar []
-  [:div
-   [mui/app-bar
-    {:style {:box-shadow "none"}
-     :position "static"
-     :color "inherit"}
-    [mui/toolbar
-     [mui/typography
-      {:variant "h5"
-       :color "primary"}
-      "form-validator demo"]
-     [:div {:style {:flex 1}}]
-     [mui/button
-      {:color "primary"
-       :href "https://github.com/kwladyka/form-validator-cljs"}
-      "github library"]
-     [mui/button
-      {:color "primary"
-       :href "https://github.com/kwladyka/form-validator-cljs/tree/doc"}
-      "code of this tutorial"]]]])
 
 (defn ?password-repeat [form name]
   "Example of validator using multiple inputs values.
-  form - atom returned be form-init
+  form - atom returned by form-init
   name - name of the input which call event"
   (let [password (get-in @form [:names->value :password])
         password-repeat (get-in @form [:names->value name])]
     (when-not (= password password-repeat)
       [:password-repeat :password-not-equal])))
 
-(defn example-layout [{:keys [title description form-conf]} example-html]
-  (let [form (fv/init-form form-conf)]
+(defn app-bar []
+  [mui/app-bar
+   {:style {:box-shadow "none"
+            :color "#f5f5f5"
+            :background-color "#6a1b9a"
+            }
+    :position "static"}
+   [mui/toolbar
+    [:h2
+     "kwladyka/form-validator-cljs"]
+    [:div {:style {:flex 1}}]
+    [mui/button
+     {:color "inherit"
+      :href "https://github.com/kwladyka/form-validator-cljs"}
+     "github library"]
+    [mui/button
+     {:color "inherit"
+      :href "https://github.com/kwladyka/form-validator-cljs/tree/doc"}
+     "code of this tutorial"]]])
+
+(defn spy-form [form form-conf]
+  (let [tab (r/atom "atom")]
     (fn []
-      [:div.example
-       [mui/typography
-        {:variant "h5"}
-        title]
+      [:div
+       [mui/app-bar
+        {:position "static"
+         :style {:box-shadow "none"}}
+        [mui/tabs
+         {:value @tab
+          :indicator-color "primary"
+          :text-color "primary"
+          :style {:background-color "#f5f5f5"}
+          :on-change #(reset! tab %2)}
+         [mui/tab
+          {:value "atom"
+           :label "@form"}]
+         [mui/tab
+          {:value "init"
+           :label "(init-form ...)"}]]]
+       (case @tab
+         "atom" [highlight-clojure
+                 {:class-name "clojure"}
+                 (-> @form
+                     (pprint)
+                     (with-out-str))]
+         "init" [highlight-clojure
+                 {:class-name "clojure"}
+                 (-> form-conf
+                     (pprint)
+                     (with-out-str))])])))
+
+(defn demo-form []
+  (let [spec->msg {::sc/email "Typo? It doesn't look valid."
+                   ::sc/password-length "Password has to be minimum 6 characters."
+                   ::sc/password-not-empty "Password can't be empty."
+                   ::sc/password-special-character "Need to have minimum one special character !@#$%^&*"
+                   :password-not-equal "Password has to be the same."
+                   ::sc/selected "You have to choose."
+                   ::sc/select-one "Accept only green."
+                   ::sc/select-multiple "Cat is obligatory."
+                   ::sc/radio "You have to choose red pill."}
+        form-conf {:names->value {:email ""
+                                  :password ""
+                                  :checkbox-without-value nil
+                                  :checkbox-with-value nil
+                                  :radio "blue"
+                                  :select-one ""
+                                  :select-multiple #{}}
+                   :form-spec ::sc/form
+                   :names->validators {:password-repeat [?password-repeat]}}
+        {:keys [form input checkbox radio select]} (util/init form-conf spec->msg)]
+    (fn []
+      [mui/grid {:container true
+                 :spacing 32}
+       [mui/grid {:item true
+                  :md 6}
+        [mui/paper {:class "form"}
+         (input {:name :email
+                 :label "Email"})
+         (input {:name :password
+                 :label "Password"
+                 :type "password"})
+         (input {:name :password-repeat
+                 :label "Password repeat"
+                 :type "password"})
+         (select
+           {:name :select-one
+            :label "Select one"
+            :style {:min-width "200px"}}
+           [mui/menu-item {:value "red"} "Red"]
+           [mui/menu-item {:value "green"} "Green"]
+           [mui/menu-item {:value "blue"} "Blue"])
+         [:br]
+         (select
+           {:name :select-multiple
+            :multiple true
+            :label "Multiple select"
+            :style {:min-width "200px"}}
+           [mui/menu-item {:value "cat"} "Cat"]
+           [mui/menu-item {:value "dog"} "Dog"]
+           [mui/menu-item {:value "fish"} "Fish"])
+         [:br]
+         (checkbox {:name :checkbox-without-value
+                    :label "Checkbox without value"})
+         (checkbox {:name :checkbox-with-value
+                    :value "confirm"
+                    :label "Checkbox with value"})
+         [:br]
+         [mui/form-control
+          [mui/radio-group {:row true}
+           (radio {:name :radio
+                   :value "red"
+                   :label "Red pill"})
+           (radio {:name :radio
+                   :value "blue"
+                   :label "Blue pill"})]]
+         [:div
+          {:style {:margin-top 40
+                   :display "flex"}}
+          [:div {:style {:flex 1}}]
+          [mui/button
+           {:variant "contained"
+            :style {:background-color (when (fv/form-valid? form) "green")}
+            :color "primary"
+            :on-click #(if (fv/validate-form-and-show? form)
+                         (js/alert "Well done"))}
+           "validate"]]]]
        [mui/grid
-        {:container true
-         :spacing 32}
-        [mui/grid
-         {:item true
-          :md 12}
-         [mui/typography
-          {:variant "subtitle1"}
-          "Form init input"]
-         [highlight-clojure
-          {:class-name "clojure"}
-          (-> form-conf
-              (pprint)
-              (with-out-str))]]
-        [mui/grid
-         {:item true
-          :md 6}
-         [mui/paper
-          {:class "example-form"}
-          (example-html form)]]
-        [mui/grid
-         {:item true
-          :md 6}
-         description]
-        [mui/grid
-         {:item true
-          :md 12}
-         [mui/typography
-          {:variant "subtitle1"}
-          "Form atom"]
-         [highlight-clojure
-          {:class-name "clojure"}
-          (-> @form
-              (pprint)
-              (with-out-str))]]]])))
+        {:class "tabs"
+         :item true
+         :md 6}
+        [spy-form form form-conf]]])))
 
-(defn example1 []
-  (let [spec->msg {::sc/email "Typo? It doesn't look valid."
-                   ::sc/password-length "Password has to be minimum 6 characters."
-                   ::sc/password-not-empty "Password can't be empty."
-                   ::sc/password-special-character "Need to have minimum one special character !@#$%^&*"
-                   :password-not-equal "Password has to be the same."}]
-    (example-layout {:title "Example 1 - register form with form spec"
-                     :description [:ul
-                                   [:li "Define specs, see " link-spec]
-                                   [:li "Add custom fn validator for password-repeat. Find " [:code "?password-repeat"] " in " link-view " to see how to create custom validation functions."]
-                                   [:li "Init form with " [:code "::form"] " spec as a validator for a whole form. Look at \"Form init input\"."]
-                                   [:li "Play with form. Look how \"Form atom\" is changing."]
-                                   [:li "Fill fields correctly and see the button color change."]
-                                   [:li "Find example1 in " link-view ". Find how button is changed to green."]]
-                     :form-conf {:names->value {:email ""
-                                                :password ""
-                                                :password-repeat ""}
-                                 :form-spec ::sc/form
-                                 :names->validators {:password-repeat [?password-repeat]}}}
-                    (fn [form]
-                      [:div
-                       [mui/text-field
-                        {:on-change (partial fv/event->names->value! form)
-                         :on-blur (partial fv/event->show-message form)
-                         :error (fv/?show-message form :email)
-                         :helper-text (or (fv/?show-message form :email spec->msg) " ")
-                         :full-width true
-                         :margin "normal"
-                         :name "email"
-                         :label "Email"}]
-                       [mui/text-field
-                        {:on-change (partial fv/event->names->value! form)
-                         :on-blur (partial fv/event->show-message form)
-                         :error (fv/?show-message form :password)
-                         :helper-text (or (fv/?show-message form :password spec->msg) " ")
-                         :full-width true
-                         :margin "normal"
-                         :type "password"
-                         :name "password"
-                         :label "Password"}]
-                       [mui/text-field
-                        {:on-change (partial fv/event->names->value! form)
-                         :on-blur (partial fv/event->show-message form)
-                         :error (fv/?show-message form :password-repeat)
-                         :helper-text (or (fv/?show-message form :password-repeat spec->msg) " ")
-                         :full-width true
-                         :margin "normal"
-                         :type "password"
-                         :name "password-repeat"
-                         :label "Password repeat"}]
-                       [:div
-                        {:style {:margin-top 40
-                                 :display "flex"}}
-                        [:div {:style {:flex 1}}]
-                        [mui/button
-                         {:variant "contained"
-                          :style {:background-color (when (fv/form-valid? form) "green")}
-                          :color "primary"
-                          :on-click #(when (fv/validate-form-and-show form)
-                                       (js/alert "OK"))}
-                         "Log in"]]]))))
-
-(defn example2 []
-  (let [spec->msg {::sc/email "Typo? It doesn't look valid."
-                   ::sc/password-length "Password has to be minimum 6 characters."
-                   ::sc/password-not-empty "Password can't be empty."
-                   ::sc/password-special-character "Need to have minimum one special character !@#$%^&*"
-                   :password-not-equal "Password has to be the same."}]
-    (example-layout {:title "Example 2 - register form with spec for each input"
-                     :description [:ul
-                                   [:li "The same effect, but define " [:code ":names->validator"] " for each input separately. Compare \"Form init input\" with example 1."]
-                                   [:li "Play with form. Look how \"Form atom\" is changing."]
-                                   [:li "Find example2 in " link-view ". There is an improvement comparing to example 1. See " [:code "partial"] " in " [:code "let"] " to reduce code repeating."]]
-                     :form-conf {:names->value {:email ""
-                                                :password ""
-                                                :password-repeat ""}
-                                 :names->validators {:email [::sc/email]
-                                                     :password [::sc/password]
-                                                     :password-repeat [?password-repeat]}}}
-                    (fn [form]
-                      (let [event->names->value! (partial fv/event->names->value! form)
-                            event->show-message (partial fv/event->show-message form)
-                            ?show-message (partial fv/?show-message form)]
-                        [:div
-                         [mui/text-field
-                          {:on-change event->names->value!
-                           :on-blur event->show-message
-                           :error (?show-message :email)
-                           :helper-text (or (?show-message :email spec->msg) " ")
-                           :full-width true
-                           :margin "normal"
-                           :name "email"
-                           :label "Email"}]
-                         [mui/text-field
-                          {:on-change event->names->value!
-                           :on-blur event->show-message
-                           :error (?show-message :password)
-                           :helper-text (or (?show-message :password spec->msg) " ")
-                           :full-width true
-                           :margin "normal"
-                           :type "password"
-                           :name "password"
-                           :label "Password"}]
-                         [mui/text-field
-                          {:on-change event->names->value!
-                           :on-blur event->show-message
-                           :error (?show-message :password-repeat)
-                           :helper-text (or (?show-message :password-repeat spec->msg) " ")
-                           :full-width true
-                           :margin "normal"
-                           :type "password"
-                           :name "password-repeat"
-                           :label "Password repeat"}]
-                         [:div
-                          {:style {:margin-top 40
-                                   :display "flex"}}
-                          [:div {:style {:flex 1}}]
-                          [mui/button
-                           {:variant "contained"
-                            :style {:background-color (when (fv/form-valid? form) "green")}
-                            :color "primary"
-                            :on-click #(when (fv/validate-form-and-show form)
-                                         (js/alert "OK"))}
-                           "Log in"]]])))))
-
-(defn example3 []
-  (let [spec->msg {::sc/email "Typo? It doesn't look valid."}]
-    (example-layout {:title "Example 3 - on-change and on-blur"
-                     :description [:ul
-                                   [:li "Watch atom to see the difference."]
-                                   [:li "You can decide when you want to change value of input in \"Atom form\"."]
-                                   [:li "You can also decide when you want to show message."]
-                                   [:li "Find example3 in " link-view ". Look how " [:code "juxt"] " is used to reduce code."]]
-                     :form-conf {:names->value {:email-on-change ""
-                                                :email-on-blur ""}
-                                 :names->validators {:email-on-change [::sc/email]
-                                                     :email-on-blur [::sc/email]}}}
-                    (fn [form]
-                      (let [?show-message (partial fv/?show-message form)
-                            event->form (partial (juxt fv/event->names->value! fv/event->show-message) form)]
-                        [:div
-                         [mui/text-field
-                          {:on-change event->form
-                           :error (?show-message :email-on-change)
-                           :helper-text (or (?show-message :email-on-change spec->msg) " ")
-                           :full-width true
-                           :margin "normal"
-                           :name "email-on-change"
-                           :label "Email on-change"}]
-                         [mui/text-field
-                          {:on-blur event->form
-                           :error (?show-message :email-on-blur)
-                           :helper-text (or (?show-message :email-on-blur spec->msg) " ")
-                           :full-width true
-                           :margin "normal"
-                           :name "email-on-blur"
-                           :label "Email on-blur"}]
-                         [:div
-                          {:style {:margin-top 40
-                                   :display "flex"}}
-                          [:div {:style {:flex 1}}]
-                          [mui/button
-                           {:variant "contained"
-                            :style {:background-color (when (fv/form-valid? form) "green")}
-                            :color "primary"
-                            :on-click #(when (fv/validate-form-and-show form)
-                                         (js/alert "OK"))}
-                           "Log in"]]])))))
-
-(defn input [{:keys [form spec->msg name label]}]
-  [mui/text-field
-   {:on-change (partial fv/event->names->value! form)
-    :on-blur (partial fv/event->show-message form)
-    :error (fv/?show-message form name)
-    :helper-text (or (fv/?show-message form name spec->msg) " ")
-    :full-width true
-    :margin "normal"
-    :name name
-    :label label}])
-
-(defn example4 []
-  (let [spec->msg {::sc/email "Typo? It doesn't look valid."
-                   ::sc/password-length "Password has to be minimum 6 characters."
-                   ::sc/password-not-empty "Password can't be empty."
-                   ::sc/password-special-character "Need to have minimum one special character !@#$%^&*"
-                   :password-not-equal "Password has to be the same."}]
-    (example-layout {:title "Example 4 - UI code optimisation"
-                     :description [:ul
-                                   [:li "The same as Example 1, but to optimise code inputs are generated by function."]
-                                   [:li "See the code " link-view]
-                                   [:li "You can optimise it even further for individual project needs. That is why UI generation is not part of the library."]]
-                     :form-conf {:names->value {:email ""
-                                                :password ""
-                                                :password-repeat ""}
-                                 :form-spec ::sc/form
-                                 :names->validators {:password-repeat [?password-repeat]}}}
-                    (fn [form]
-                      [:div
-                       [input {:form form
-                               :spec->msg spec->msg
-                               :name :email
-                               :label "Email"}]
-                       [input {:form form
-                               :spec->msg spec->msg
-                               :name "password"
-                               :label "Password"}]
-                       [input {:form form
-                               :spec->msg spec->msg
-                               :name "password-repeat"
-                               :label "Password repeat"}]
-                       [:div
-                        {:style {:margin-top 40
-                                 :display "flex"}}
-                        [:div {:style {:flex 1}}]
-                        [mui/button
-                         {:variant "contained"
-                          :style {:background-color (when (fv/form-valid? form) "green")}
-                          :color "primary"
-                          :on-click #(when (fv/validate-form-and-show form)
-                                       (js/alert "OK"))}
-                         "Log in"]]]))))
-
-(defn main-view []
+(defn main []
   [:div
    [app-bar]
    [:div.page
-    [:div.library-description
-     [mui/typography
-      {:variant "h6"}
-      "ClojureScript library to validate forms."]
-     [mui/typography
-      "I recommend to read \"github library\" readme first. Then play with this page. Real code gives the best experience."]]
-    [example1]
-    [example2]
-    [example3]
-    [example4]]])
+    [mui/grid {:container true}
+     [mui/grid {:item true}
+      [:div.library-description
+       [:h2 "ClojureScript library to validate forms"]
+       [:p "This is tutorial for " [:a {:href "https://github.com/kwladyka/form-validator-cljs"} "kwladyka/form-validator-cljs"] "."]
+       [:p "I recommend to read readme in library first. Then you will understand " [:code "@FORM"] " and " [:code "(INIT-FORM ...)"] " tabs. UI of this tutorial is not part of the library. Visual part can be whatever you want."]
+       [:p "Tutorial will show you how to use library by his own code. Real code is the best way to learn."]]]]
+    [demo-form]
+    [mui/grid {:container true}
+     [mui/grid {:item true}
+      [:h2 "Learn the code"]
+      [:ol
+       [:li "Open " [:a {:href "https://github.com/kwladyka/form-validator-cljs/blob/doc/src/form_validator_doc/"} "tutorial repository"]]
+       [:li [:code "spec.cljs"] " - how to define form validators."]
+       [:li [:code "form.cljs"] " - how to implement custom UI on top of this library."]
+       [:li [:code "views.cljs"] " - final code for form above."]]]]]])

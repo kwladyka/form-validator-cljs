@@ -5,13 +5,13 @@
             [form-validator.core :as fv]
             [form-validator-doc.views :as views]))
 
-(fv/set-conf! {:atom r/atom})
+(swap! fv/conf #(merge % {:atom r/atom}))
 
 (defn get-app-element []
   (gdom/getElement "app"))
 
 (defn mount [el]
-  (r/render-component [views/main-view] el))
+  (r/render-component [views/main] el))
 
 (defn mount-app-element []
   (when-let [el (get-app-element)]
