@@ -14,6 +14,12 @@ ClojureScript library to validate forms.
 
 Why? I need it myself. But I didn't find any library which satisfy me, so I wrote my own.
 
+## Tutorial and Demo
+
+Discover it naturally by real code: https://kwladyka.github.io/form-validator-cljs/
+
+The best to do after this readme. But if you are inpatient take a look and back here.
+
 ## Add dependency
 
 ### deps.edn
@@ -75,14 +81,6 @@ Then you can use functions from ns `form-validator.core`:
 - `?show-message` - Get message to show in UI for input. Also to know if mark input as not valid in UI.
 - `form-valid?` - true / false
 - `validate-form-and-show?` - Call `validate-form` and show all messages. Use with submit button.
-
-## Tutorial with live examples
-
-Discover it naturally in 10 minutes: https://kwladyka.github.io/form-validator-cljs/
-
-The best to do after this readme. But if you are inpecient take a look and back here.
-
-Disclaimer: Tutorial is not up to date. If you like this library and want to see updated and better tutorial write to me on Clojurians Slack @kwladyka to give me motivation.
 
 ## Specification
 
