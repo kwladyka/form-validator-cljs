@@ -10,8 +10,8 @@
       :cljs.spec.alpha/problems))
 
 (defn spec-validate
-  "Check value with spec.
-  If fail return reason: vector of spec keywords."
+  "Check value by spec.
+  If validate return nil, otherwise return a reason: the :via value of spec problem."
   [form spec name]
   (->> (get-in @form [:names->value name])
        (?spec-problems spec)
