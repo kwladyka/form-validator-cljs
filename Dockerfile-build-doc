@@ -19,6 +19,7 @@ RUN git clone -b doc https://github.com/kwladyka/form-validator-cljs.git /app/do
 RUN npm i
 RUN npx webpack --mode=production
 RUN clojure -A:fig:min
+
 # deploy doc
 
 RUN git clone -b gh-pages https://github.com/kwladyka/form-validator-cljs.git /app/gh-pages

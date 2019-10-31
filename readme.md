@@ -1,3 +1,5 @@
+**DEPRECATED: moved to github actions**
+
 # cicd
 
 This repository is mainly for me as a maintainer of this module.
