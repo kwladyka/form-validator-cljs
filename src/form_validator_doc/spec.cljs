@@ -1,6 +1,6 @@
 (ns form-validator-doc.spec
   (:require [cljs.spec.alpha :as s]
-            [clojure.test.check.generators]))
+            [clojure.test.check.generators :as gen]))
 
 (s/def ::checked boolean)
 (s/def ::selected not-empty)
@@ -22,5 +22,4 @@
 (s/def ::form (s/keys :req-un [::email ::password
                                ::checkbox-with-value ::checkbox-without-value
                                ::select-one ::select-multiple
-                               ::radio]
-                      :opt-un [::password-repeat]))
+                               ::radio]))
