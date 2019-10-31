@@ -1,0 +1,53 @@
+name: doc -> gh-pages
+
+on:
+  push:
+    branches:
+    - doc
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+      with:
+        ref: doc
+        fetch-depth: 1
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '13.0.1'
+
+    - name: Install clojure
+      uses: DeLaGuardo/setup-clojure@2.0
+      with:
+        tools-deps: '1.10.1.478'
+
+    - run: npm i
+    - run: npx webpack --mode=production
+    - name: Build
+      run: clojure -A:fig:min
+    - run: cp -r ./resources/public/. ./target/public/
+    - run: rm ./target/public/test.html
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v2.5.0
+      with:
+        emptyCommits: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./target/public
+
+    - name: Slack notifications
+      uses: 8398a7/action-slack@v2
+      with:
+        status: ${{ job.status }}
+        author_name: GitHub Actions
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()

@@ -44,8 +44,6 @@ Add source of library to watch-dir.
 
 **But remember to not commit this changes!**
 
-
-
 ### Runing and coding
 
 ```bash
@@ -56,4 +54,4 @@ clj -A:fig:build
 
 ### Production
 
-See branch `cicd`.
+Github actions
