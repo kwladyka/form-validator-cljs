@@ -1,3 +1,6 @@
+![](https://github.com/kwladyka/form-validator-cljs/workflows/master/badge.svg)
+![](https://github.com/kwladyka/form-validator-cljs/workflows/doc%20-%3E%20gh-pages/badge.svg)
+
 # form-validator
 
 ClojureScript library to validate forms.
