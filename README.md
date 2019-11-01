@@ -17,6 +17,8 @@ ClojureScript library to validate forms.
 
 Why? I need it myself. But I didn't find any library which satisfy me, so I wrote my own.
 
+Read my article [form validation](https://clojure.wladyka.eu/posts/form-validation/) to learn more rationales.
+
 ## Tutorial and Demo
 
 Discover it naturally by real code: https://kwladyka.github.io/form-validator-cljs/
