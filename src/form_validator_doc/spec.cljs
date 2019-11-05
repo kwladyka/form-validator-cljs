@@ -19,6 +19,16 @@
 
 (s/def ::radio #{"red"})
 
+(s/def ::not-empty-string (s/and string? not-empty))
+(s/def ::first-line ::not-empty-string)
+(s/def ::zip-code ::not-empty-string)
+
+(s/def ::address (s/keys 
+                   :req-un [::first-line ::zip-code]))
+
+;; the key would be generated id of some sort
+(s/def ::addresses (s/map-of string? ::address))
+
 (s/def ::form (s/keys :req-un [::email ::password
                                ::checkbox-with-value ::checkbox-without-value
                                ::select-one ::select-multiple
