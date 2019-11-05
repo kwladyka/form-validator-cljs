@@ -27,7 +27,7 @@
                    :req-un [::first-line ::zip-code]))
 
 ;; the key would be generated id of some sort
-(s/def ::addresses (s/map-of string? ::address))
+(s/def ::addresses (s/map-of string? ::address :min-count 1))
 
 (s/def ::form (s/keys :req-un [::email ::password
                                ::checkbox-with-value ::checkbox-without-value
