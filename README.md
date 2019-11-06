@@ -1,7 +1,6 @@
 ![](https://github.com/kwladyka/form-validator-cljs/workflows/master%20tests/badge.svg)
 ![](https://github.com/kwladyka/form-validator-cljs/workflows/doc%20-%3E%20gh-pages/badge.svg)
 ![](https://github.com/kwladyka/form-validator-cljs/workflows/clojars/badge.svg)
-[![Clojars Project](https://img.shields.io/clojars/v/kwladyka/form-validator-cljs.svg)](https://clojars.org/kwladyka/form-validator-cljs)
 
 # form-validator
 
@@ -29,17 +28,7 @@ The best to do after this readme. But if you are inpatient take a look and back 
 
 ## Add dependency
 
-### deps.edn
-
-```clojure
-{:deps {github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs" :sha "0fec75c9046bff3b5c5f37a0bd7f821c1e8edbe0"}}}
-```
-
-### Lein
-
-The recommended way to do it is to use [lein-tool-deps](https://github.com/RickMoynihan/lein-tools-deps).
-
-Basicly add this plugin and make `deps.edn` file like above.
+[![Clojars Project](https://img.shields.io/clojars/v/kwladyka/form-validator-cljs.svg)](https://clojars.org/kwladyka/form-validator-cljs)
 
 ### Require in ns
 
