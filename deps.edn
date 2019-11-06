@@ -3,7 +3,8 @@
         reagent {:mvn/version "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom]}
         re-frame {:mvn/version "0.11.0-rc1"}
         ;github-kwladyka/form-validator {:local/root "../master"}
-        github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs.git" :sha "0fec75c9046bff3b5c5f37a0bd7f821c1e8edbe0"}
+        ;github-kwladyka/form-validator {:git/url "https://github.com/kwladyka/form-validator-cljs.git" :sha "0fec75c9046bff3b5c5f37a0bd7f821c1e8edbe0"}
+        kwladyka/form-validator-cljs {:mvn/version "1.2.1"}
         org.clojure/test.check {:mvn/version "0.10.0"}}
  :paths ["src" "resources"]
  :aliases {:fig {:extra-deps
