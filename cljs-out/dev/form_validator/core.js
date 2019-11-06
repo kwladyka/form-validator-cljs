@@ -11,8 +11,8 @@ form_validator.core._QMARK_spec_problems = (function form_validator$core$_QMARK_
 return cljs.core.cst$kw$cljs$spec$alpha_SLASH_problems.cljs$core$IFn$_invoke$arity$1(cljs.spec.alpha.explain_data(spec,value));
 });
 /**
- * Check value with spec.
- *   If fail return reason: vector of spec keywords.
+ * Check value by spec.
+ *   If validate return nil, otherwise return a reason: the :via value of spec problem.
  */
 form_validator.core.spec_validate = (function form_validator$core$spec_validate(form,spec,name){
 return cljs.core.cst$kw$via.cljs$core$IFn$_invoke$arity$1(cljs.core.first(form_validator.core._QMARK_spec_problems(spec,cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(form),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$names_DASH__GT_value,name], null)))));
