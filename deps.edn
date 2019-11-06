@@ -5,4 +5,7 @@
                                re-frame {:mvn/version "0.11.0-rc1"}}
                   :extra-paths ["test"]}
            :test-once {:main-opts ["-m" "cljs-test-runner.main"]}
-           :test-watch {:main-opts ["-m" "cljs-test-runner.main" "-w" "src"]}}}
+           :test-watch {:main-opts ["-m" "cljs-test-runner.main" "-w" "src"]}
+           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "0.3.4"}}}
+           :clojars-deploy {:extra-deps {deps-deploy {:mvn/version "0.0.9"}}
+                            :main-opts ["-m" "deps-deploy.deps-deploy" "deploy" "form-validation-cljs.jar" "true"]}}}

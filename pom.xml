@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>kwladyka</groupId>
+  <artifactId>form-validator-cljs</artifactId>
+  <version/>
+  <name>form-validator-cljs</name>
+  <url>https://github.com/kwladyka/form-validator-cljs</url>
+  <description>ClojureScript library to validate forms.</description>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License 2.0</name>
+      <url>https://github.com/kwladyka/form-validator-cljs/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Krzysztof Władyka</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/kwladyka/form-validator-cljs</url>
+    <connection>scm:git:git://github.com/kwladyka/form-validator-cljs.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/kwladyka/form-validator-cljs.git</developerConnection>
+    <tag/>
+  </scm>
+
+  <repositories>
+    <repository>
+      <id>clojars</id>
+      <url>https://repo.clojars.org/</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id>clojars</id>
+      <name>Clojars repository</name>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </distributionManagement>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+  </build>
+</project>

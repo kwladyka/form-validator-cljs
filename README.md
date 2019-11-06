@@ -1,5 +1,7 @@
-![](https://github.com/kwladyka/form-validator-cljs/workflows/master/badge.svg)
+![](https://github.com/kwladyka/form-validator-cljs/workflows/master%20tests/badge.svg)
 ![](https://github.com/kwladyka/form-validator-cljs/workflows/doc%20-%3E%20gh-pages/badge.svg)
+![](https://github.com/kwladyka/form-validator-cljs/workflows/clojars/badge.svg)
+[![Clojars Project](https://img.shields.io/clojars/v/kwladyka/form-validator-cljs.svg)](https://clojars.org/kwladyka/form-validator-cljs)
 
 # form-validator
 
