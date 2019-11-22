@@ -75,6 +75,7 @@
                    ::sc/radio "You have to choose red pill."}
         form-conf {:names->value {:email ""
                                   :password ""
+                                  :password-repeat ""
                                   :checkbox-without-value nil
                                   :checkbox-with-value nil
                                   :radio "blue"
