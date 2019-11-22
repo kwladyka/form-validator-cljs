@@ -156,7 +156,7 @@
        [:h2 "ClojureScript library to validate forms"]
        [:p "This is tutorial for " [:a {:href "https://github.com/kwladyka/form-validator-cljs"} "kwladyka/form-validator-cljs"] "."]
        [:p "I recommend to read readme in library first. Then you will understand " [:code "@FORM"] " and " [:code "(INIT-FORM ...)"] " tabs. UI of this tutorial is not part of the library. Visual part can be whatever you want."]
-       [:p "Tutorial will show you how to use library by his own code. Real code is the best way to learn."]]]]
+       [:p "Tutorial will teach you how to use the library by its own code. Real code is the best way to learn."]]]]
     [demo-form]
     [mui/grid {:container true}
      [mui/grid {:item true}
