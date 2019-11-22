@@ -32,13 +32,15 @@ jobs:
       run: clojure -A:fig:min
     - run: cp -r ./resources/public/. ./target/public/
     - run: rm ./target/public/test.html
+    - run: touch ./target/public/.nojekyll
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       with:
         emptyCommits: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: ./target/public
 
