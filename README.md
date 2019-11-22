@@ -24,7 +24,9 @@ Read my article [form validation](https://clojure.wladyka.eu/posts/form-validati
 
 Discover it naturally by real code: https://kwladyka.github.io/form-validator-cljs/
 
-The best to do after this readme. But if you are inpatient take a look and back here.
+<a href="https://kwladyka.github.io/form-validator-cljs/"><img src="https://storage.googleapis.com/kwladyka/form-validator-cljs/demo.gif"></a>
+
+Please keep in mind it is an example. It could easy take actions on different events `on-change` / `on-blur` / button click. All is your choice.
 
 ## Add dependency
 
